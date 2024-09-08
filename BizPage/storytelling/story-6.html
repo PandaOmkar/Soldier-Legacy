@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlipBook</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    /* FlipBook */
+
+    body {
+      /* or any other parent wrapper */
+      margin: 0;
+      display: flex;
+      min-height: 100dvh;
+      perspective: 1000px;
+      font: 1em/1.4 "Poppins", sans-serif;
+      overflow: hidden;
+      color: hsl(180 68% 5%);
+      background-image: radial-gradient(circle farthest-corner at 50% 50%, hsl(187 20% 88%) 30%, hsl(149 20% 94%) 100%);
+    }
+
+    .book {
+      position: relative;
+      display: flex;
+      margin: auto;
+      width: 40cqmin;
+      /*1 let pointer event go trough pages of lower Z than .book */
+      pointer-events: none;
+      transform-style: preserve-3d;
+      transition: translate 1s;
+      translate: calc(min(var(--c), 1) * 50%) 0%;
+      /* Incline on the X axis for pages preview */
+      rotate: 1 0 0 360deg;
+    }
+
+    .page {
+      /* PS: Don't go below thickness 0.5 or the pages might transpare */
+      --thickness: 4;
+      flex: none;
+      display: flex;
+      width: 100%;
+      font-size: 2cqmin;
+      /*1 allow pointer events on pages */
+      pointer-events: all;
+      user-select: none;
+      transform-style: preserve-3d;
+      transform-origin: left center;
+      transition:
+        transform 1s,
+        rotate 1s ease-in calc((min(var(--i), var(--c)) - max(var(--i), var(--c))) * 50ms);
+      translate: calc(var(--i) * -100%) 0px 0px;
+      transform: translateZ( calc((var(--c) - var(--i) - 0.5) * calc(var(--thickness) * .23cqmin)));
+      rotate: 0 1 0 calc(clamp(0, var(--c) - var(--i), 1) * -180deg);
+    }
+
+    .front,
+    .back {
+      position: relative;
+      flex: none;
+      width: 400px;
+      backface-visibility: hidden;
+      overflow: hidden;
+      background-color: #fff;
+      /* Fix backface visibility Firefox: */
+      translate: 0px;
+    }
+
+    .back {
+      translate: -100% 0;
+      rotate: 0 1 0 180deg;
+    }
+
+    /* That's it. Your FlipBook customization styles: */
+
+    .book {
+      counter-reset: page -1;
+    }
+    
+    .book a {
+      color: inherit;
+    }
+
+    .page {
+      box-shadow: 0em .5em 1em -.2em #00000020;
+    }
+
+    .front,
+    .back {
+      padding: 2em;
+      border: 1px solid #0002;
+    }
+
+    .front:has(img),
+    .back:has(img) {
+      padding: 0;
+    }
+
+    .front img,
+    .back img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .front::after,
+    .back::after {
+      position: absolute;
+      bottom: 1em;
+      counter-increment: page;
+      content: counter(page) ".";
+      font-size: 0.8em;
+    }
+
+    .cover::after {
+      content: "";
+    }
+
+    .front::after {
+      right: 1em;
+    }
+
+    .front {
+      background: linear-gradient(to left, #f7f7f7 80%, #eee 100%);
+      border-radius: .1em .5em .5em .1em;
+    }
+
+    .back::after {
+      left: 1em;
+    }
+
+    .back {
+      background-image: linear-gradient(to right, #f7f7f7 80%, #eee 100%);
+      border-radius: .5em .1em .1em .5em;
+    }
+
+    .cover {
+      background: radial-gradient(circle farthest-corner at 80% 20%, hsl(150 80% 20% / .3) 0%, hsl(170 60% 10% / .1) 100%),
+        hsl(231, 32%, 29%) url("https://i.pinimg.com/originals/1e/e3/42/1ee3421d7c42c0c64fb4309fe07a9738.jpg") 50% / cover;
+      color: hsl(200 30% 98%);
+    }
+  </style>
+</head>
+<body>
+  <div class="book">
+    <div class="page">
+      <div class="front cover">
+       <h2>Advitiya Bal ( 16 JULY,1996 - 28 JULY,2022)</h2>
+       <h3>~ Flight Lieutenant </h3>
+      </div>
+      <div class="back">
+       <img src="https://pbs.twimg.com/media/F1FwF_0WcAI_mjU.jpg:large">
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+        <h2> Flight Lieutenant Advitiya Bal( 16 JULY,1996 - 28 JULY,2022)
+        </h2>
+       <p>Flight Lieutenant Advitiya Bal hailed from Ranbir Singh Pura in Jammu district of J&K and was born on 16 July 1996. Son of an army veteran Swarn Bal and Smt Praveen Kumari, he had a brother Harshil as his sibling. He came from a military family wherein besides his father, two of his uncles too had served in the armed forces. From his early childhood, Flt Lt Advitiya chased the dream of becoming an Air Force pilot and would often stare at the sky, hoping to conquer it one day. After completing his primary education, he joined the Sainik School at Nagrota, wherein the foundation of his future military life was laid.Following his passion he got selected for the National Defence Academy and joined the prestigious institute in 2014. 
+
+    </p>
+      </div>
+      <div class="back">
+       <p> Later he went to the Air Force Academy in Hyderabad and got commissioned as a Flying Officer on 16 Jun 2018 as part of the 201st Pilots' Course. After completing his multi-phase fighter flying training, he got posted to a front-line fighter Squadron based at Uttarlai Air Force Station in Barmer district of Rajasthan.  Very soon, he gained experience in various air combat operations and developed into a professionally competent air warrior.
+
+    </p>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+        <img src="https://www.ssbcrack.com/wp-content/uploads/2022/07/Flt-Lt-Advitiya-Bal.webp" alt="Img 1">
+      </div>
+      <div class="back">
+        <h1> MIG 21 Air-crash: 28 July 2022   </h1>
+       <p>During July 2022, Flt Lt Advitiya Bal was serving with the No 4 Squadron of the IAF, a fighter Squadron based at Air Force Base Uttarlai in the Barmer district of Rajasthan. No 4 Sqn was raised on 01 Feb 1942 at Peshawar under the command of Squadron Leader Habib Ullah Khan. With the motto of "Maan Par Jaan" meaning "Death over Dishonour", the Sqn took part in various operations after its formation. After moving to numerous locations, it moved to Air Force Base Uttarlai in the year 1987.During peacetime training is one of the most important activities of IAF which helps it to remain prepared to take on any eventuality. A war-like situation is created in the air for the pilots to practice and remain updated.  Flt Lt Advitiya Bal too was undertaking training sorties to practice various combat air operations regularly. 
+    </p>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+      <p>On 28 July 2022,  Flt Lt Advitiya Bal as co-pilot was undertaking another such sortie along with Wg Cdr Mohit Rana. It was a training sortie for an air combat mission at night in a MIG-21 Russian-origin fighter jet trainer aircraft. As planned Flt Lt Advitiya Bal and Wg Cdr Mohit Rana took off from Uttarlai airbase after completing the necessary operational checks on the ground.
+        However, within a few minutes, the pilots reported a fire in the engine and initiated emergency measures. However soon the aircraft burst into flames mid-air and crashed to the ground, leaving no time for the pilots to eject. The captain of the aircraft, Wg Cdr Mohit Rana, who was also the Flight Commander of the Squadron, was an experienced pilot capable of handling various emergencies. But unfortunately, Flt Lt Advitiya Bal and Wg Cdr Mohit Rana did not get enough time to land safely due to a sudden fire in the engine of the aircraft. Wg Cdr Mohit Rana and Flt Lt Advitiya Bal using their flying skills probably tried to maneuver the aircraft away from the residential area of the village to minimize the loss of life and property.
+    </p>
+      </div>
+      <div class="back">
+      <p>But eventually, the aircraft crashed at around 2110 hrs. Flt Lt Advitiya Bal and Wg Cdr Mohit Rana could not survive the crash and succumbed to their injuries. Flt Lt Advitiya Bal was a valiant soldier and committed air warrior who laid down his life at the age of 26 years in the service of the nation. Flt Lt Advitiya Bal is survived by his father an army veteran Shri Swarn Bal, mother Smt Praveen Kumari, and brother Shri Harshil Bal.
+        
+        
+        
+        
+    </p>
+      </div>
+    </div>
+    
+    <div class="page">
+      <div class="front">
+        <img src="https://pbs.twimg.com/media/FYz6uPeagAEqnq6.jpg" alt="Img 1"> 
+        
+    
+      </div>
+      <div class="back">
+        <img src="https://pbs.twimg.com/media/FYzmUfGWQAAJ5T_.jpg" alt="Img 1">
+      </div>
+    </div>
+    <div class="page">
+      <div class="front">
+      </div>
+      <div class="back cover">
+        </div>
+    </div>
+  </div>
+  <script>
+    const flipBook = (elBook) => {
+      elBook.style.setProperty("--c", 0); // Set current page
+      elBook.querySelectorAll(".page").forEach((page, idx) => {
+        page.style.setProperty("--i", idx);
+        page.addEventListener("click", (evt) => {
+          if (evt.target.closest("a")) return;
+          const curr = evt.target.closest(".back") ? idx : idx + 1;
+          elBook.style.setProperty("--c", curr);
+        });
+      });
+    };
+
+    document.querySelectorAll(".book").forEach(flipBook);
+  </script>
+</body>
+</html>

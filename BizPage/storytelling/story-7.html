@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlipBook</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    /* FlipBook */
+
+    body {
+      /* or any other parent wrapper */
+      margin: 0;
+      display: flex;
+      min-height: 100dvh;
+      perspective: 1000px;
+      font: 1em/1.4 "Poppins", sans-serif;
+      overflow: hidden;
+      color: hsl(180 68% 5%);
+      background-image: radial-gradient(circle farthest-corner at 50% 50%, hsl(187 20% 88%) 30%, hsl(149 20% 94%) 100%);
+    }
+
+    .book {
+      position: relative;
+      display: flex;
+      margin: auto;
+      width: 40cqmin;
+      /*1 let pointer event go trough pages of lower Z than .book */
+      pointer-events: none;
+      transform-style: preserve-3d;
+      transition: translate 1s;
+      translate: calc(min(var(--c), 1) * 50%) 0%;
+      /* Incline on the X axis for pages preview */
+      rotate: 1 0 0 360deg;
+    }
+
+    .page {
+      /* PS: Don't go below thickness 0.5 or the pages might transpare */
+      --thickness: 4;
+      flex: none;
+      display: flex;
+      width: 100%;
+      font-size: 2cqmin;
+      /*1 allow pointer events on pages */
+      pointer-events: all;
+      user-select: none;
+      transform-style: preserve-3d;
+      transform-origin: left center;
+      transition:
+        transform 1s,
+        rotate 1s ease-in calc((min(var(--i), var(--c)) - max(var(--i), var(--c))) * 50ms);
+      translate: calc(var(--i) * -100%) 0px 0px;
+      transform: translateZ( calc((var(--c) - var(--i) - 0.5) * calc(var(--thickness) * .23cqmin)));
+      rotate: 0 1 0 calc(clamp(0, var(--c) - var(--i), 1) * -180deg);
+    }
+
+    .front,
+    .back {
+      position: relative;
+      flex: none;
+      width: 400px;
+      backface-visibility: hidden;
+      overflow: hidden;
+      background-color: #fff;
+      /* Fix backface visibility Firefox: */
+      translate: 0px;
+    }
+
+    .back {
+      translate: -100% 0;
+      rotate: 0 1 0 180deg;
+    }
+
+    /* That's it. Your FlipBook customization styles: */
+
+    .book {
+      counter-reset: page -1;
+    }
+    
+    .book a {
+      color: inherit;
+    }
+
+    .page {
+      box-shadow: 0em .5em 1em -.2em #00000020;
+    }
+
+    .front,
+    .back {
+      padding: 2em;
+      border: 1px solid #0002;
+    }
+
+    .front:has(img),
+    .back:has(img) {
+      padding: 0;
+    }
+
+    .front img,
+    .back img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .front::after,
+    .back::after {
+      position: absolute;
+      bottom: 1em;
+      counter-increment: page;
+      content: counter(page) ".";
+      font-size: 0.8em;
+    }
+
+    .cover::after {
+      content: "";
+    }
+
+    .front::after {
+      right: 1em;
+    }
+
+    .front {
+      background: linear-gradient(to left, #f7f7f7 80%, #eee 100%);
+      border-radius: .1em .5em .5em .1em;
+    }
+
+    .back::after {
+      left: 1em;
+    }
+
+    .back {
+      background-image: linear-gradient(to right, #f7f7f7 80%, #eee 100%);
+      border-radius: .5em .1em .1em .5em;
+    }
+
+    .cover {
+      background: radial-gradient(circle farthest-corner at 80% 20%, hsl(150 80% 20% / .3) 0%, hsl(170 60% 10% / .1) 100%),
+        hsl(231, 32%, 29%) url("https://i.pinimg.com/564x/1f/d6/2a/1fd62a755b759f516438dd2e0b2129b6.jpg") 50% / cover;
+      color: hsl(200 30% 98%);
+    }
+  </style>
+</head>
+<body>
+  <div class="book">
+    <div class="page">
+      <div class="front cover">
+        <h1> Rishi Kumar ( 1998 - 30 oct,2021)</h1>
+        <h2>  ~ Lieutenant</h2>
+      
+      </div>
+      <div class="back">
+       <img src="https://pbs.twimg.com/media/FC9gm5VVQAIkA7T.jpg">
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+        <h2> Lieutenant Rishi Kumar( 1998 - 30 oct,2021)
+        </h2>
+       <p>Lieutenant Rishi Kumar hailed from Begusarai district of Bihar and was born in the year 1998. Son of Shri Rajiv Ranjan Singh and Smt Sarita Devi, Lt Rishi Kumar had two sisters as his siblings. His elder sister too joined the army as a commissioned officer and was serving as a Major. Lt Rishi Kumar was inclined to join the army since his younger days and continued to follow his dream. Eventually he got selected to join the army after completing his engineering. He got commissioned as a Lieutenant in Dec 2020 at the age of 22 years. As his first assignment, Lt Rishi Kumar was posted to serve with 17 Sikh LI battalion of the Sikh Light Infantry Regt, a well known infantry Regiment.  
+    </p>
+      </div>
+      <div class="back">
+        <h1>  Area Domination Patrol (Naushera Sector J&K) : 30 Oct 2021
+        </h1>
+       <p> During 2021, Lt Rishi Kumar’s unit 17 Sikh LI was deployed in Naushera sector of Rajouri district in Jammu and Kashmir. The unit was manning the forward posts along the LOC in Rajouri district. As the area of his unit’s operation was very volatile and prone to infiltration by militants, the unit had to maintain a strict vigil at all times and deployed armed patrols with regular frequency. The landmines along the patrol routes posed a serious danger to the troops and the Bomb Disposal Squad of the unit was often called upon to sanitize the routes. On 30 Oct 2021, Lt Rishi Kumar was tasked to lead one area domination patrol in the unit's AOR. 
+
+    </p>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+        <img src="https://pbs.twimg.com/media/FDAGyONVIAIe-DR.jpg" alt="Img 1">
+      </div>
+      <div class="back">
+       
+       <p>As Lt Rishi Kumar and his comrades were traversing through the challenging terrain as per the planned patrol route, there was a massive mine blast around 6 pm. The blast had a devastating effect, injuring three soldiers severely. Lt Rishi Kumar faced the brunt of the blast and absorbed most of the splinters, thereby screening his comrades behind him. However Lt Rishi Kumar and one of his soldiers Sep Manjit Singh later succumbed to their injuries and were martyred. Lt Rishi Kumar was slated to get married soon but he was more devoted to the higher cause of serving the motherland and laid down his life in the service of the nation at the age of 23 years. Lt Rishi Kumar is survived by his father Shri Rajiv Ranjan Singh, mother Smt Sarita Devi and two sisters.
+
+
+    </p>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+      <p>The incident took place when an army column was on patrol duty to check the infiltration of terrorists from across the border.
+
+        On October 27, Kumar’s mother Sarita had spoken to her son over the phone. She said that he promised to come home for Chhath Puja. “However, he did not come, but we got the heart-wrenching news of the death of my son. I never thought that it would be the last time I would speak to him,” Sarita added.
+        
+        Neighbour Vikas Vaibhav said Rishi Kumar had joined 17 Sikh Infantry of the Indian Army in 2020 and was posted to Jammu and Kashmir only two months ago.The slain officer has two sisters and the elder one is also in the army. Rishi’s younger sister’s wedding was fixed for November 29 during his leave. The martyr’s neighbours described him as a ‘hero’ who always had a smile on his face.Meanwhile, Begusarai MP and Union minister Giriraj Singh also saluted Rishi’s bravery and prayed to God to give strength to the family to bear his loss.
+        
+        
+
+    </p>
+      </div>
+      <div class="back">
+      <i><p>“My tributes to the undoubting courage of army personnel Lt Rishi Kumar & Sepoy Manjit Singh, who attained martyrdom while safeguarding India’s territorial integrity in Nowshera sector. My deepest condolences to the families of martyrs & prayers for speedy recovery of the injured,” lieutenant governor Manoj Sinha said in a tweet.
+        
+    </p></i>
+      </div>
+    </div>
+    
+    <div class="page">
+      <div class="front">
+        <img src="https://www.honourpoint.in/wp-content/uploads/2021/10/Ri-2shi.jpeg" alt="Img 1">
+    
+      </div>
+      <div class="back">
+        <img src="https://22scope.com/wp-content/uploads/2021/10/tweet-1.jpg.webp" alt="Img 1"> 
+      </div>
+    </div>
+    <div class="page">
+      <div class="front">
+      </div>
+      <div class="back cover">
+        </div>
+    </div>
+  </div>
+  <script>
+    const flipBook = (elBook) => {
+      elBook.style.setProperty("--c", 0); // Set current page
+      elBook.querySelectorAll(".page").forEach((page, idx) => {
+        page.style.setProperty("--i", idx);
+        page.addEventListener("click", (evt) => {
+          if (evt.target.closest("a")) return;
+          const curr = evt.target.closest(".back") ? idx : idx + 1;
+          elBook.style.setProperty("--c", curr);
+        });
+      });
+    };
+
+    document.querySelectorAll(".book").forEach(flipBook);
+  </script>
+</body>
+</html>

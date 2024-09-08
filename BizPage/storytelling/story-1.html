@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlipBook</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    /* FlipBook */
+
+    body {
+      /* or any other parent wrapper */
+      margin: 0;
+      display: flex;
+      min-height: 100dvh;
+      perspective: 1000px;
+      font: 1em/1.4 "Poppins", sans-serif;
+      overflow: hidden;
+      color: hsl(180 68% 5%);
+      background-image: radial-gradient(circle farthest-corner at 50% 50%, hsl(187 20% 88%) 30%, hsl(149 20% 94%) 100%);
+    }
+
+    .book {
+      position: relative;
+      display: flex;
+      margin: auto;
+      width: 40cqmin;
+      /*1 let pointer event go trough pages of lower Z than .book */
+      pointer-events: none;
+      transform-style: preserve-3d;
+      transition: translate 1s;
+      translate: calc(min(var(--c), 1) * 50%) 0%;
+      /* Incline on the X axis for pages preview */
+      rotate: 1 0 0 360deg;
+    }
+
+    .page {
+      /* PS: Don't go below thickness 0.5 or the pages might transpare */
+      --thickness: 4;
+      flex: none;
+      display: flex;
+      width: 100%;
+      font-size: 2cqmin;
+      /*1 allow pointer events on pages */
+      pointer-events: all;
+      user-select: none;
+      transform-style: preserve-3d;
+      transform-origin: left center;
+      transition:
+        transform 1s,
+        rotate 1s ease-in calc((min(var(--i), var(--c)) - max(var(--i), var(--c))) * 50ms);
+      translate: calc(var(--i) * -100%) 0px 0px;
+      transform: translateZ( calc((var(--c) - var(--i) - 0.5) * calc(var(--thickness) * .23cqmin)));
+      rotate: 0 1 0 calc(clamp(0, var(--c) - var(--i), 1) * -180deg);
+    }
+
+    .front,
+    .back {
+      position: relative;
+      flex: none;
+      width: 400px;
+      backface-visibility: hidden;
+      overflow: hidden;
+      background-color: #fff;
+      /* Fix backface visibility Firefox: */
+      translate: 0px;
+    }
+
+    .back {
+      translate: -100% 0;
+      rotate: 0 1 0 180deg;
+    }
+
+    /* That's it. Your FlipBook customization styles: */
+
+    .book {
+      counter-reset: page -1;
+    }
+    
+    .book a {
+      color: inherit;
+    }
+
+    .page {
+      box-shadow: 0em .5em 1em -.2em #00000020;
+    }
+
+    .front,
+    .back {
+      padding: 2em;
+      border: 1px solid #0002;
+    }
+
+    .front:has(img),
+    .back:has(img) {
+      padding: 0;
+    }
+
+    .front img,
+    .back img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .front::after,
+    .back::after {
+      position: absolute;
+      bottom: 1em;
+      counter-increment: page;
+      content: counter(page) ".";
+      font-size: 0.8em;
+    }
+
+    .cover::after {
+      content: "";
+    }
+
+    .front::after {
+      right: 1em;
+    }
+
+    .front {
+      background: linear-gradient(to left, #f7f7f7 80%, #eee 100%);
+      border-radius: .1em .5em .5em .1em;
+    }
+
+    .back::after {
+      left: 1em;
+    }
+
+    .back {
+      background-image: linear-gradient(to right, #f7f7f7 80%, #eee 100%);
+      border-radius: .5em .1em .1em .5em;
+    }
+
+    .cover {
+      background: radial-gradient(circle farthest-corner at 80% 20%, hsl(150 80% 20% / .3) 0%, hsl(170 60% 10% / .1) 100%),
+        hsl(231, 32%, 29%) url("https://i.pinimg.com/736x/09/89/0e/09890e844476ba4223445898b2f54805.jpg") 50% / cover;
+      color: hsl(200 30% 98%);
+    }
+  </style>
+</head>
+<body>
+  <div class="book">
+    <div class="page">
+      <div class="front cover">
+        <h2>Sandeep Unnikrishnan (15 March 1977 - 28 November 2008)</h2>
+        <h3> ~ Major (Indian Army) </h3>
+      </div>
+      <div class="back">
+       <img src="https://th-i.thgim.com/public/news/national/usivrx/article25591069.ece/alternates/FREE_1200/SANDEEPs">
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+        <h4> Sandeep unnikrishnan(15 March 1977 - 28 November 2008)</h4>
+       <p> Major Sandeep Unnikrishnan was born on  15 March 1977 in Kozhikode, Kerala. Maj Sandeep Unnikrishnan came from a Nair family residing in Bangalore, where they had moved from Cheruvannur, in Kozhikode District of Kerala. The only child of an ISRO officer Shri K. Unnikrishnan and Smt Dhanalakshmi Unnikrishnan, he always nursed the idea of serving in the Armed Forces since his younger days. He spent 14 years at the Frank Anthony Public School in Bangalore before graduating in 1995 in the Science stream. He did well in school activities and excelled in sports events too. He was also a member of the school choir and enjoyed watching movies.He  joined the National Defence Academy (NDA), Pune, Maharashtra in 1995 and graduated as part of the 94th Course of NDA.  His NDA friends remember him as “selfless”, “generous” and “calm and composed”. Subsequently he joined 104 IMA Course at IMA Dehradun and passed out in 1999.  </p>
+      </div>
+      <div class="back">
+       <p>He was commissioned as a lieutenant into the 7th Battalion of the Bihar Regiment (Infantry) on 12 July 1999 at the age of 22 years.After joining the operational unit he soon honed his field craft skills and evolved into a tough and committed soldier. As a young Lieutenant, he also participated in "Operation Vijay" in July 1999 and was deployed at the forward posts in the face of heavy artillery firing and small arms fire by Pakistan troops. On the evening of 31 Dec 1999,  he led a team of six soldiers and managed to establish a post 200 meters from the opposing side against heavy opposition and fire.He got elevated from Lieutenant to Captain on 12 June 2003 and later got promoted to the rank of Major on 13 June 2005.  During the ‘Ghatak Course’ (at the Commando Wing (Infantry School), Belgaum), one of the most challenging courses of the Army, he topped the course, earning an “Instructor Grading” and commendation. 
+    </p>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+        <img src="https://bigbiography.com/wp-content/uploads/2023/03/sandeep-with-parents.webp" alt="Img 1">
+      </div>
+      <div class="back">
+       <p>He also attended a course at High Altitude Warfare School (HAWS) at Gulmarg and got trained in High Altitude warfare, counter intelligence and survival skills.  After serving the Indian Army in different locations in Siachen, Jammu and Kashmir, Gujarat and Rajasthan Maj Sandeep Unnikrishnan was selected to join the National Security Guards. On completion of training, he was assigned as the training officer of the 51 Special Action Group (51 SAG) of NSG, in January 2007 and participated in various operations of the NSG. 
+    </p>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+        <h3> Operation Black Tornado: Nov 2008
+        </h3>
+      <p>During Nov 2008, Maj Unnikrishnan was serving with 51 SAG, a special response unit of the NSG trained and equipped for counter-terrorism operations. On the night of 26 November 2008, several iconic buildings in South Mumbai were attacked. One of the buildings where hostages were held was the 100-year-old Taj Mahal Palace Hotel. Maj Unnikrishnan was the team commander of 51 Special Action Group (51 SAG) deployed in the operation at the hotel to rescue the hostages. He entered the hotel with a group of 10 commandos and reached the sixth floor through the staircase. As the team descended the stairs, they suspected perpetrators on the third floor. A few women were held as hostages in a room that was locked from the inside.The team decided to break open the door and when it was done the team faced a barrage of fire from the terrorists. 
+    </p>
+      </div>
+      <div class="back">
+      <p>The rounds of fire by the perpetrators hit Commando Sunil Yadav, who was Maj Unnikrishnan’s colleague. Maj Unnikrishnan engaged the perpetrators in a firefight and arranged for Yadav’s evacuation. Later Maj Unnikrishnan gave a chase to the terrorists who had escaped to another floor of the hotel. In the encounter that followed, he was shot in the back which proved fatal. His last words, according to NSG officials were, “Do not come up, I will handle them,”. His exceptional courage and leadership motivated his comrades to eliminate all the terrorists and complete the assigned mission successfully. Maj Sandeep Unnikrishnan was a valiant soldier and gritty officer, who led from the front and laid down his life at the age of 31 years in the line of his duty, following the highest traditions of Indian Army. Maj Sandeep Unnikrishnan was given the nation’s highest peacetime gallantry award “Ashok Chakra” for his outstanding courage, unyielding fighting spirit and supreme sacrifice. Maj Sandeep Unnikrishnan is survived by his father Shri K. Unnikrishnan and mother Smt Dhanalakshmi Unnikrishnan.
+    </p>
+      </div>
+    </div>
+    
+    <div class="page">
+      <div class="front">
+        <img src="https://talkativefox.com/wp-content/uploads/2023/01/2222-1.png" alt="Img 1">
+    
+      </div>
+      <div class="back">
+        <img src="https://pbs.twimg.com/media/Ec6mZljU0AAM3MH.jpg" alt="Img 1"> 
+      </div>
+    </div>
+    <div class="page">
+      <div class="front">
+      </div>
+      <div class="back cover">
+        </div>
+    </div>
+  </div>
+  <script>
+    const flipBook = (elBook) => {
+      elBook.style.setProperty("--c", 0); // Set current page
+      elBook.querySelectorAll(".page").forEach((page, idx) => {
+        page.style.setProperty("--i", idx);
+        page.addEventListener("click", (evt) => {
+          if (evt.target.closest("a")) return;
+          const curr = evt.target.closest(".back") ? idx : idx + 1;
+          elBook.style.setProperty("--c", curr);
+        });
+      });
+    };
+
+    document.querySelectorAll(".book").forEach(flipBook);
+  </script>
+</body>
+</html>

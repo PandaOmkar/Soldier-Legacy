@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlipBook</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    /* FlipBook */
+
+    body {
+      /* or any other parent wrapper */
+      margin: 0;
+      display: flex;
+      min-height: 100dvh;
+      perspective: 1000px;
+      font: 1em/1.4 "Poppins", sans-serif;
+      overflow: hidden;
+      color: hsl(180 68% 5%);
+      background-image: radial-gradient(circle farthest-corner at 50% 50%, hsl(187 20% 88%) 30%, hsl(149 20% 94%) 100%);
+    }
+
+    .book {
+      position: relative;
+      display: flex;
+      margin: auto;
+      width: 40cqmin;
+      /*1 let pointer event go trough pages of lower Z than .book */
+      pointer-events: none;
+      transform-style: preserve-3d;
+      transition: translate 1s;
+      translate: calc(min(var(--c), 1) * 50%) 0%;
+      /* Incline on the X axis for pages preview */
+      rotate: 1 0 0 360deg;
+    }
+
+    .page {
+      /* PS: Don't go below thickness 0.5 or the pages might transpare */
+      --thickness: 4;
+      flex: none;
+      display: flex;
+      width: 100%;
+      font-size: 2cqmin;
+      /*1 allow pointer events on pages */
+      pointer-events: all;
+      user-select: none;
+      transform-style: preserve-3d;
+      transform-origin: left center;
+      transition:
+        transform 1s,
+        rotate 1s ease-in calc((min(var(--i), var(--c)) - max(var(--i), var(--c))) * 50ms);
+      translate: calc(var(--i) * -100%) 0px 0px;
+      transform: translateZ( calc((var(--c) - var(--i) - 0.5) * calc(var(--thickness) * .23cqmin)));
+      rotate: 0 1 0 calc(clamp(0, var(--c) - var(--i), 1) * -180deg);
+    }
+
+    .front,
+    .back {
+      position: relative;
+      flex: none;
+      width: 400px;
+      backface-visibility: hidden;
+      overflow: hidden;
+      background-color: #fff;
+      /* Fix backface visibility Firefox: */
+      translate: 0px;
+    }
+
+    .back {
+      translate: -100% 0;
+      rotate: 0 1 0 180deg;
+    }
+
+    /* That's it. Your FlipBook customization styles: */
+
+    .book {
+      counter-reset: page -1;
+    }
+    
+    .book a {
+      color: inherit;
+    }
+
+    .page {
+      box-shadow: 0em .5em 1em -.2em #00000020;
+    }
+
+    .front,
+    .back {
+      padding: 2em;
+      border: 1px solid #0002;
+    }
+
+    .front:has(img),
+    .back:has(img) {
+      padding: 0;
+    }
+
+    .front img,
+    .back img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .front::after,
+    .back::after {
+      position: absolute;
+      bottom: 1em;
+      counter-increment: page;
+      content: counter(page) ".";
+      font-size: 0.8em;
+    }
+
+    .cover::after {
+      content: "";
+    }
+
+    .front::after {
+      right: 1em;
+    }
+
+    .front {
+      background: linear-gradient(to left, #f7f7f7 80%, #eee 100%);
+      border-radius: .1em .5em .5em .1em;
+    }
+
+    .back::after {
+      left: 1em;
+    }
+
+    .back {
+      background-image: linear-gradient(to right, #f7f7f7 80%, #eee 100%);
+      border-radius: .5em .1em .1em .5em;
+    }
+
+    .cover {
+      background: radial-gradient(circle farthest-corner at 80% 20%, hsl(150 80% 20% / .3) 0%, hsl(170 60% 10% / .1) 100%),
+        hsl(231, 32%, 29%) url("https://i.pinimg.com/736x/20/dc/13/20dc13cbf2a830b417f4865c49cd0687.jpg") 50% / cover;
+      color: hsl(200 30% 98%);
+    }
+  </style>
+</head>
+<body>
+  <div class="book">
+    <div class="page">
+      <div class="front cover">
+        <h1> Abhinav Nagori (1991 - 24th March, 2015)
+      </h1>
+       <h2> ~ Lieutenant(Indian Navy)</h2>
+      </div>
+      <div class="back">
+        <img src="https://honourpoint.in/wp-content/uploads/2024/03/1-Lt-Abhinav-Nagori.jpg">
+      
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+        <h2>Lt Abhinav Nagori(1991 - 24th March, 2015)
+
+        </h2>
+       <p>Lt Abhinav Nagori hailed from Udaipur in Rajasthan. Son of Shri Dharamchand Nagori and Smt Sushila Devi, Lt Abhinav had two sisters Shweta and Smita as his siblings. He did his schooling at St. Paul's School, Udaipur, and later on, went to study engineeering. He completed his engineering in electronics from SJB Institute of Technology in Bengaluru and passed out in 2008. After completion of engineering, he received many job offers but he dropped all of them and opted to join the Navy, his first love. Lt Nagori was commissioned in the Navy on July 25, 2012, after having spent six months in INA and completing a year of pilot training in the Air Force Academy Dundigul. He became the first person in his family to be commissioned as an officer in the Navy.
+    </p>
+      </div>
+      <div class="back">
+       <p> Lt Abhinav was an avid swimmer and a nature lover, so much so that he would treat the plants as his kids. Lt Abhinav was also fond of cooking since his childhood and spent his spare time trying out various recipes. Besides cooking, swimming and cycling, Lt  Abhinav loved music too and had a violin, which he played at times in the house. 
+    </p>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+        <img src="https://honourpoint.in/wp-content/uploads/2024/03/Lt-Abhinav-Nagori.jpg" alt="Img 1">
+    
+      </div>
+      <div class="back">
+        <h1> Indian Navy Dornier Crash: 24th March 2015</h1>
+       
+       <p>During Mar 2015, Lt Abhinav Nagori was serving with Indian Naval Air Squadron (INAS) 310, a maritime reconnaissance squadron of the Indian Navy based at Goa. It was one of the most decorated naval air squadrons, with a distinguished history. Initially equipped with French Breguet Br. 1050 Alizé aircraft, the squadron later operated German-origin Dornier Do-228 aircraft from INS Hansa, in Dabolim, Goa. The Dornier Do-228 aircraft inducted in 1991 in the squadron was configured for Maritime Patrol (MP) and Electronic warfare roles. At the time of their induction, the aircraft were fitted with MEL Super Marec 360º Search radar, sonobuoys, AES 210 ESM, and direction-finding systems.
+    </p>
+      </div>
+    </div>
+    <div class="page">
+      <div class="front">
+      <p>Subsequently, HAL's modifications to the airframe included four underwing hardpoints, to accommodate additional external payload including wing-mounted 7.62mm gun pods. In 1998, GPS units and new ELINT equipment were installed resulting in a major capability upgrade for the squadron’s Dorniers.  During Op Vijay, from May to July 1999, the "Cobras"  carried out MR/ELINT missions in close coordination with the Army and the Air Force. This was the first time the Dornier was deployed as an EW platform in support of the Army and the Air Force for integrated ELINT operations. The Cobras also played a vital part in the 2001-2002 India-Pakistan stand-off following the Indian Parliament attack by the suspected terrorists on Dec 13, 2001. Deploying at the commencement of 'Op Parakram' in January 2002, the squadron, with aircraft painted in a low visibility grey color scheme, was detached to Naliya to carry out more ELINT operations.
+        
+        
+
+    </p>
+      </div>
+      <div class="back">
+      <p>On 24 Mar 2015, the squadron undertook one more such mission with Commander Nikhil Joshi, co-pilot Lt Abhinav Nagori, and Lt Kiran Shekhawat, as an observer. Lt  Nagori was operating in a combat role as a pilot flying over the ocean for tracking and engaging hostile ships violating the country’s maritime boundaries.The aicrew completed the operational ground checks and the aircraft took off from Goa as planned on 24 Mar 2015. It was a night sortie and was uneventful in the initial part of the mission. At about 10 pm the Dornier aircraft transmitted the message to the Air Traffic Control - "Ops Normal". But as the Dornier was trying to gain height after flying as low as 50 feet, a crucial part of the exercise, it disappeared from the screen of the Naval Air Traffic Controller on duty at that time at the Goa airport.The Naval ATC alerted the air traffic control at the Mumbai, Mangalore, and Trivandrum airports to see if they could trace the plane. Within 40 minutes,the first ship and helicopters of the Indian Navy left the Goa harbour to search for the missing Dornier.
+    </p>
+      </div>
+    </div>
+    
+    <div class="page">
+      <div class="front">
+        <img src="https://honourpoint.in/wp-content/uploads/2024/03/2-Lt-Abhinav-Nagori.jpg">
+       
+    
+      </div>
+      <div class="back">
+        <p>  Eventually, it was confirmed that the aircraft had crashed about 25nm off the coast of Goa at about 22:08 hours. The body of Lt Abhinav Nagori and that of Lt Kiran Shekhawat were recovered two days after the crash, while the pilot Commander Nikhil Joshi was rescued by a fisherman. The wreckage of the Dornier was found about 60 m under the sea at the south-west of Goa coast. The body of Lt Abhinav Nagori was found inside the fuselage of the aircraft. Lt Abhinav Nagori was a brave soldier and a commited officer, who laid down his life at the age of 24 years in lin of his duty.Lt Abhinav Nagori is survived by his father Shri Dharamchand Nagori and mother Smt Sushila Devi.</p> 
+      </div>
+    </div>
+    <div class="page">
+      <div class="front">
+        <img src="https://pbs.twimg.com/media/CBFXM-3UkAAe93_.jpg" alt="Img 1">
+      </div>
+      <div class="back cover">
+        </div>
+    </div>
+  </div>
+  <script>
+    const flipBook = (elBook) => {
+      elBook.style.setProperty("--c", 0); // Set current page
+      elBook.querySelectorAll(".page").forEach((page, idx) => {
+        page.style.setProperty("--i", idx);
+        page.addEventListener("click", (evt) => {
+          if (evt.target.closest("a")) return;
+          const curr = evt.target.closest(".back") ? idx : idx + 1;
+          elBook.style.setProperty("--c", curr);
+        });
+      });
+    };
+
+    document.querySelectorAll(".book").forEach(flipBook);
+  </script>
+</body>
+</html>

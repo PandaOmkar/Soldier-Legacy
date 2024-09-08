@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlipBook</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    /* FlipBook */
+
+    body {
+      /* or any other parent wrapper */
+      margin: 0;
+      display: flex;
+      min-height: 100dvh;
+      perspective: 1000px;
+      font: 1em/1.4 "Poppins", sans-serif;
+      overflow: hidden;
+      color: hsl(180 68% 5%);
+      background-image: radial-gradient(circle farthest-corner at 50% 50%, hsl(187 20% 88%) 30%, hsl(149 20% 94%) 100%);
+    }
+
+    .book {
+      position: relative;
+      display: flex;
+      margin: auto;
+      width: 40cqmin;
+      /*1 let pointer event go trough pages of lower Z than .book */
+      pointer-events: none;
+      transform-style: preserve-3d;
+      transition: translate 1s;
+      translate: calc(min(var(--c), 1) * 50%) 0%;
+      /* Incline on the X axis for pages preview */
+      rotate: 1 0 0 360deg;
+    }
+
+    .page {
+      /* PS: Don't go below thickness 0.5 or the pages might transpare */
+      --thickness: 4;
+      flex: none;
+      display: flex;
+      width: 100%;
+      font-size: 2cqmin;
+      /*1 allow pointer events on pages */
+      pointer-events: all;
+      user-select: none;
+      transform-style: preserve-3d;
+      transform-origin: left center;
+      transition:
+        transform 1s,
+        rotate 1s ease-in calc((min(var(--i), var(--c)) - max(var(--i), var(--c))) * 50ms);
+      translate: calc(var(--i) * -100%) 0px 0px;
+      transform: translateZ( calc((var(--c) - var(--i) - 0.5) * calc(var(--thickness) * .23cqmin)));
+      rotate: 0 1 0 calc(clamp(0, var(--c) - var(--i), 1) * -180deg);
+    }
+
+    .front,
+    .back {
+      position: relative;
+      flex: none;
+      width: 400px;
+      backface-visibility: hidden;
+      overflow: hidden;
+      background-color: #fff;
+      /* Fix backface visibility Firefox: */
+      translate: 0px;
+    }
+
+    .back {
+      translate: -100% 0;
+      rotate: 0 1 0 180deg;
+    }
+
+    /* That's it. Your FlipBook customization styles: */
+
+    .book {
+      counter-reset: page -1;
+    }
+    
+    .book a {
+      color: inherit;
+    }
+
+    .page {
+      box-shadow: 0em .5em 1em -.2em #00000020;
+    }
+
+    .front,
+    .back {
+     padding: 2em;
+      border: 1px solid #0002;
+    }
+
+    .front:has(img),
+    .back:has(img) {
+      padding: 0;
+    }
+
+    .front img,
+    .back img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .front::after,
+    .back::after {
+      position: absolute;
+      bottom: 1em;
+      counter-increment: page;
+      content: counter(page) ".";
+      font-size: 0.8em;
+    }
+
+    .cover::after {
+      content: "";
+    }
+
+    .front::after {
+      right: 1em;
+    }
+
+    .front {
+      background: linear-gradient(to left, #f7f7f7 80%, #eee 100%);
+      border-radius: .1em .5em .5em .1em;
+    }
+
+    .back::after {
+      left: 1em;
+    }
+
+    .back {
+      background-image: linear-gradient(to right, #f7f7f7 80%, #eee 100%);
+      border-radius: .5em .1em .1em .5em;
+    }
+
+    .cover {
+      background: radial-gradient(circle farthest-corner at 80% 20%, hsl(150 80% 20% / .3) 0%, hsl(170 60% 10% / .1) 100%),
+        hsl(231, 32%, 29%) url("https://i.pinimg.com/564x/e3/c5/92/e3c592c74486a4bc10255c8ae438c0b3.jpg") 50% / cover;
+      color: hsl(200 30% 98%);
+    }
+  </style>
+</head>
+<body>
+  <div class="book">
+    <div class="page">
+      <div class="front cover">
+       <h1>Anshuman Singh (1997 - 19 july,2023)</h1>
+       <h3>~ Captain (Indian Army)</h3>
+      </div>
+      <div class="back">
+       <img src="https://pbs.twimg.com/media/GExBJsxXkAAxSWu.jpg">
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+        <h2> CAPTAIN ANSHUMAN SINGH(1997 - 19 july,2023)
+        </h2>
+       <p> Captain Anshuman Singh hailed from Bardiha Dalpat village of Deoria district in Uttar Pradesh and was born in the year 1997. Son of an army veteran Subedar Ravi Pratap Singh and Smt Manju Singh, he was the youngest among three siblings with an elder brother and sister. He did his schooling at Rashtriya Military School Chail, a residential school located in Himachal Pradesh. While studying in the Rashtriya Military School his inclination towards the Armed Forces grew and the foundation of his future military life was laid. After completing his schooling, he got selected for the prestigious AFMC Pune to pursue his graduation in medicine.Upon completing his studies at Armed Forces Medical College, Pune, he embarked on a journey of service by joining the Indian Army.
+    </p>
+      </div>
+      <div class="back">
+       <p> He was commissioned into the Army Medical Corps, the corps that provides medical service to the Indian Army during peace and war. Beginning his career as an Army Medical Corps officer, he dedicated himself to the noble cause of providing medical care and support to his fellow servicemen.  After serving for some time, he got married to Ms Smriti Singh on 10 Feb 2023, an engineer by profession.
+    </p>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+        <img src="https://images.bhaskarassets.com/web2images/521/2023/07/20/4cbc7c48-60e5-4d21-b47b-8b0aa41df5e41689817194291_1689831613.jpg" alt="Img 1">
+      </div>
+      <div class="back">
+        <h1> Siachen Glacier Fire Accident : 19 July 2023 </h1>
+       <p>In July 2023, Capt Anshuman Singh was serving with 403 Field Hospital of 26 Punjab Battalion on attachment from 26 Madras deployed in Siachen Glacier. The area remained inaccessible during the winter months and the soldiers faced extreme risks in manning the forward posts in inhospitable terrain at heights over 19,000 feet under extreme weather conditions. The troops besides manning designated posts also operated regular patrols to monitor the gaps between the manned posts. Capt Anshuman Singh functioning as a Regimental medical officer was responsible for providing medical care to all the troops deployed in the area.In the early morning hours on 19th Jul 2023, approximately at 3 a.m., an ammunition stockpile caught fire at the Chandan dropping zone at Siachen. 
+    </p>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+      <p>Capt Anshuman heard the call of fire and rushed out of his Fibre Glass Hut. Capt Anshuman quickly realized that many of his soldiers were trapped inside and needed to be rescued  Without caring for his own safety, he leaped into action, fully aware of the risks, to save as many of his fellow troops as possible. Despite the perilous surroundings and the threat posed by the fire, he fearlessly ventured into the affected area, determined to search for survivors and bring them to safety. Demonstrating quick thinking and fearless leadership, Capt Anshuman Singh managed to rescue four to five individuals from the nearby Fibre Glass Hut that was rapidly filling with smoke and on the brink of catching fire. His calm demeanor and clear instructions helped guide these individuals to safety, showcasing his remarkable ability to stay composed under pressure.Then he saw that the Medical Investigation room was engulfed in fire. He went inside his Fibre Glass Hut to retrieve the medical aid box, however, he could not make his way out as the flames had spread and engulfed his shelter because of high-velocity winds.
+
+    </p>
+      </div>
+      <div class="back">
+      <p>He could not be rescued despite repeated efforts. His mortal remains were retrieved from the shelter after the fire was doused. Capt Anshuman Singh was a valiant soldier and a fine officer, who led from the front and laid down his life at the age of 26 years in the service of the nation. Capt Anshuman Singh was given the nation’s second-highest peacetime gallantry award, “Kirti Chakra” posthumously for his outstanding courage, devotion to duty, and supreme sacrifice.The award was received by his mother Smt Manju Singh and wife Smt Smriti Singh from President Smt Droupadi Murmu on 05 July 2024.  Capt Anshuman Singh is survived by his father Sub Ravi Pratap Singh (Retd), mother Smt Manju Singh, and wife Smt Smriti Singh. 
+        
+    </p>
+      </div>
+    </div>
+    
+    <div class="page">
+      <div class="front">
+        <img src="https://www.ssbcrack.com/wp-content/uploads/2024/07/Captain-Anshuman-Singh-scaled.jpg" alt="Img 1">
+    
+      </div>
+      <div class="back">
+        <img src="https://qph.cf2.quoracdn.net/main-qimg-e80994b1e2f6a980580a22b204bfa50e" alt="Img 1"> 
+      </div>
+    </div>
+    <div class="page">
+      <div class="front">
+      </div>
+      <div class="back cover">
+        </div>
+    </div>
+  </div>
+  <script>
+    const flipBook = (elBook) => {
+      elBook.style.setProperty("--c", 0); // Set current page
+      elBook.querySelectorAll(".page").forEach((page, idx) => {
+        page.style.setProperty("--i", idx);
+        page.addEventListener("click", (evt) => {
+          if (evt.target.closest("a")) return;
+          const curr = evt.target.closest(".back") ? idx : idx + 1;
+          elBook.style.setProperty("--c", curr);
+        });
+      });
+    };
+
+    document.querySelectorAll(".book").forEach(flipBook);
+  </script>
+</body>
+</html>

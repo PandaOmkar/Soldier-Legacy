@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlipBook</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    /* FlipBook */
+
+    body {
+      /* or any other parent wrapper */
+      margin: 0;
+      display: flex;
+      min-height: 100dvh;
+      perspective: 1000px;
+      font: 1em/1.4 "Poppins", sans-serif;
+      overflow: hidden;
+      color: hsl(180 68% 5%);
+      background-image: radial-gradient(circle farthest-corner at 50% 50%, hsl(187 20% 88%) 30%, hsl(149 20% 94%) 100%);
+    }
+
+    .book {
+      position: relative;
+      display: flex;
+      margin: auto;
+      width: 40cqmin;
+      /*1 let pointer event go trough pages of lower Z than .book */
+      pointer-events: none;
+      transform-style: preserve-3d;
+      transition: translate 1s;
+      translate: calc(min(var(--c), 1) * 50%) 0%;
+      /* Incline on the X axis for pages preview */
+      rotate: 1 0 0 360deg;
+    }
+
+    .page {
+      /* PS: Don't go below thickness 0.5 or the pages might transpare */
+      --thickness: 4;
+      flex: none;
+      display: flex;
+      width: 100%;
+      font-size: 2cqmin;
+      /*1 allow pointer events on pages */
+      pointer-events: all;
+      user-select: none;
+      transform-style: preserve-3d;
+      transform-origin: left center;
+      transition:
+        transform 1s,
+        rotate 1s ease-in calc((min(var(--i), var(--c)) - max(var(--i), var(--c))) * 50ms);
+      translate: calc(var(--i) * -100%) 0px 0px;
+      transform: translateZ( calc((var(--c) - var(--i) - 0.5) * calc(var(--thickness) * .23cqmin)));
+      rotate: 0 1 0 calc(clamp(0, var(--c) - var(--i), 1) * -180deg);
+    }
+
+    .front,
+    .back {
+      position: relative;
+      flex: none;
+      width: 400px;
+      backface-visibility: hidden;
+      overflow: hidden;
+      background-color: #fff;
+      /* Fix backface visibility Firefox: */
+      translate: 0px;
+    }
+
+    .back {
+      translate: -100% 0;
+      rotate: 0 1 0 180deg;
+    }
+
+    /* That's it. Your FlipBook customization styles: */
+
+    .book {
+      counter-reset: page -1;
+    }
+    
+    .book a {
+      color: inherit;
+    }
+
+    .page {
+      box-shadow: 0em .5em 1em -.2em #00000020;
+    }
+
+    .front,
+    .back {
+      padding: 2em;
+      border: 1px solid #0002;
+    }
+
+    .front:has(img),
+    .back:has(img) {
+      padding: 0;
+    }
+
+    .front img,
+    .back img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .front::after,
+    .back::after {
+      position: absolute;
+      bottom: 1em;
+      counter-increment: page;
+      content: counter(page) ".";
+      font-size: 0.8em;
+    }
+
+    .cover::after {
+      content: "";
+    }
+
+    .front::after {
+      right: 1em;
+    }
+
+    .front {
+      background: linear-gradient(to left, #f7f7f7 80%, #eee 100%);
+      border-radius: .1em .5em .5em .1em;
+    }
+
+    .back::after {
+      left: 1em;
+    }
+
+    .back {
+      background-image: linear-gradient(to right, #f7f7f7 80%, #eee 100%);
+      border-radius: .5em .1em .1em .5em;
+    }
+
+    .cover {
+      background: radial-gradient(circle farthest-corner at 80% 20%, hsl(150 80% 20% / .3) 0%, hsl(170 60% 10% / .1) 100%),
+        hsl(231, 32%, 29%) url("https://images.fineartamerica.com/images-medium-large-5/winter-night-walk-jan-stria.jpg") 50% / cover;
+      color: hsl(200 30% 98%);
+    }
+  </style>
+</head>
+<body>
+  <div class="book">
+    <div class="page">
+      <div class="front cover">
+       <h2>Abhinav Chaudhary (15 july, 1991 - 21 May,2021)</h2>
+    <h3> ~ Squadron leader. </h3>      
+  </div>
+      <div class="back">
+       <img src="https://img.etimg.com/thumb/width-1200,height-1200,imgsize-160085,resizemode-75,msid-82878265/news/defence/mig-21-crash-nda-pays-homage-to-sqn-ldr-abhinav-choudhary.jpg">
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+        <h2> Sqn Ldr Abhinav Chaudhary(15 july, 1991 - 21 May,2021) </h2>
+       <p>Sqn Ldr Abhinav Chaudhary hailed from Pusar village in Meerut district of Uttar Pradesh. Son of Shri Satyendra Chaudhary and Smt Satya Chaudhary, he had a sister Mudrika as his sibling. He had a strong desire to join the armed forces right from his childhood, which grew along with his age. After completing his initial schooling from Meerut, he got selected to join the prestigious Rashtriya Indian Military College (RIMC) Dehradun. It was at this place, that the foundation of his future military career was laid. Subsequently he got selected for the NDA and joined it in the year 2010. He joined the "R" Squadron in NDA and excelled in various activities during his training period. He passed out of NDA as part of 124th course in the year 2013. 
+    </p>
+      </div>
+      <div class="back">
+       <p> Later he was commissioned into the Indian Air Force in the fighter stream from  Air Force Academy (AFA) in the year 2014. He underwent multi-phases flying training and got trained as a fighter pilot. After completing his training, he got posted to the Air Force base at Pathankot. He joined the fighter squadron at the base, operating MiG-21 Bison aircraft. After serving for few years, he got married to Ms Sonika Ujjaval on 25 Dec 2019. By 2021, he had put in around 7 years of service and had been promoted to the rank of Squadron Leader. By that time Sqn Ldr Abhinav Chaudhary had evolved into a professionally competent fighter pilot with substantial experience in various air operations. 
+    </p>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+        <img src="https://static.toiimg.com/thumb/msid-82850585,width-1280,height-720,resizemode-72/82850585.jpg" alt="Img 1">
+      </div>
+      <div class="back">
+        <h1> MiG-21  Aircraft Crash: 21 May 2021  </h1>
+       <p>During May 2021, Sqn Ldr Abhinav Chaudhary was serving with 23 Sqn, known as 'Panthers" based at Air Force Station Suratgarh in Rajasthan. 23 Squadron was formed at Pune in the year 1956 with the de Havilland Vampires with Sqn Ldr Kanwar Singh as its first commanding officer. Later it was armed with Gnat aircraft in 1960s and eventually Mig-21 Bison. During peacetime training is one of the most important activities of IAF which helps it to remain prepared to take on any eventuality. A war-like situation is created in the air for the pilots to practice and remain updated. Sqn Ldr Abhinav Chaudhary too was undertaking training sorties to practice complex air operations on a regular basis. On 20 May 2021, Sqn Ldr Abhinav Chaudhary was undertaking another such sortie.
+    </p>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+      <p>Sqn Ldr Abhinav Chaudhary took off from Air Force Station Suratgarh as planned for the night mission on 20 May 2021. However the aircraft developed some serous technical snag and Sqn Ldr Abhinav Chaudhary had no choice but to eject. The aircraft was seen circling over the fields in Langeana village in Moga district in Punjab before coming down. Sqn Ldr Abhinav Choudhary  using his flying skills probably tried to manoevre the aircraft away from residential area of the village to minimize the loss of life and property. But eventually the aircraft crashed near Langeana village at around 0100 Hrs on 21 May 2021. However Sqn Ldr Abhinav Choudhary could not survive the crash and succumbed to his injuries.His body was found 2 km away from the crash spot after an intense search of nearly four hours. His parachute was found open and an SOS was also sent from his device to IAF, but he had lost the battle of life by then.He tried to land safely using the parachute, but apparently broke his neck and spinal cord. 
+
+    </p>
+      </div>
+      <div class="back">
+      <p>Sqn Ldr Abhinav Choudhary was a committed soldier and a gallant air warrior who laid  down his life in the service of the nation. Sqn Ldr Abhinav Chaudhary is survived by his by his father Shri Satyendra Chaudhary, mother Smt Satya Chaudhary, wife Smt Sonika Ujjaval and sister Mudrika.
+        
+    </p>
+      </div>
+    </div>
+    
+    <div class="page">
+      <div class="front">
+        <img src="https://ssbcrackexams.com/wp-content/uploads/2021/05/Squadron-Leader-Abhinav-Choudhary-45.jpg" alt="Img 1">
+    
+      </div>
+      <div class="back">
+        <img src="https://eurasiantimes.com/wp-content/uploads/2021/05/abhinav-768x1024-1-e1621656738733.jpg" alt="Img 1"> 
+      </div>
+    </div>
+    <div class="page">
+      <div class="front">
+      </div>
+      <div class="back cover">
+        </div>
+    </div>
+  </div>
+  <script>
+    const flipBook = (elBook) => {
+      elBook.style.setProperty("--c", 0); // Set current page
+      elBook.querySelectorAll(".page").forEach((page, idx) => {
+        page.style.setProperty("--i", idx);
+        page.addEventListener("click", (evt) => {
+          if (evt.target.closest("a")) return;
+          const curr = evt.target.closest(".back") ? idx : idx + 1;
+          elBook.style.setProperty("--c", curr);
+        });
+      });
+    };
+
+    document.querySelectorAll(".book").forEach(flipBook);
+  </script>
+</body>
+</html>

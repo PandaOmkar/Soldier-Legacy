@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlipBook</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    /* FlipBook */
+
+    body {
+      /* or any other parent wrapper */
+      margin: 0;
+      display: flex;
+      min-height: 100dvh;
+      perspective: 1000px;
+      font: 1em/1.4 "Poppins", sans-serif;
+      overflow: hidden;
+      color: hsl(180 68% 5%);
+      background-image: radial-gradient(circle farthest-corner at 50% 50%, hsl(187 20% 88%) 30%, hsl(149 20% 94%) 100%);
+    }
+
+    .book {
+      position: relative;
+      display: flex;
+      margin: auto;
+      width: 40cqmin;
+      /*1 let pointer event go trough pages of lower Z than .book */
+      pointer-events: none;
+      transform-style: preserve-3d;
+      transition: translate 1s;
+      translate: calc(min(var(--c), 1) * 50%) 0%;
+      /* Incline on the X axis for pages preview */
+      rotate: 1 0 0 360deg;
+    }
+
+    .page {
+      /* PS: Don't go below thickness 0.5 or the pages might transpare */
+      --thickness: 4;
+      flex: none;
+      display: flex;
+      width: 100%;
+      font-size: 2cqmin;
+      /*1 allow pointer events on pages */
+      pointer-events: all;
+      user-select: none;
+      transform-style: preserve-3d;
+      transform-origin: left center;
+      transition:
+        transform 1s,
+        rotate 1s ease-in calc((min(var(--i), var(--c)) - max(var(--i), var(--c))) * 50ms);
+      translate: calc(var(--i) * -100%) 0px 0px;
+      transform: translateZ( calc((var(--c) - var(--i) - 0.5) * calc(var(--thickness) * .23cqmin)));
+      rotate: 0 1 0 calc(clamp(0, var(--c) - var(--i), 1) * -180deg);
+    }
+
+    .front,
+    .back {
+      position: relative;
+      flex: none;
+      width: 350px;
+      height: 550px;
+      backface-visibility: hidden;
+      overflow: hidden;
+      background-color: #fff;
+      /* Fix backface visibility Firefox: */
+      translate: 0px;
+    }
+
+    .back {
+      translate: -100% 0;
+      rotate: 0 1 0 180deg;
+    }
+
+    /* That's it. Your FlipBook customization styles: */
+
+    .book {
+      counter-reset: page -1;
+    }
+    
+    .book a {
+      color: inherit;
+    }
+
+    .page {
+      box-shadow: 0em .5em 1em -.2em #00000020;
+    }
+
+    .front,
+    .back {
+      padding: 2em;
+      border: 1px solid #0002;
+    }
+
+    .front:has(img),
+    .back:has(img) {
+      padding: 0;
+    }
+
+    .front img,
+    .back img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .front::after,
+    .back::after {
+      position: absolute;
+      bottom: 1em;
+      counter-increment: page;
+      content: counter(page) ".";
+      font-size: 0.8em;
+    }
+
+    .cover::after {
+      content: "";
+    }
+
+    .front::after {
+      right: 1em;
+    }
+
+    .front {
+      background: linear-gradient(to left, #f7f7f7 80%, #eee 100%);
+      border-radius: .1em .5em .5em .1em;
+    }
+
+    .back::after {
+      left: 1em;
+    }
+
+    .back {
+      background-image: linear-gradient(to right, #f7f7f7 80%, #eee 100%);
+      border-radius: .5em .1em .1em .5em;
+    }
+
+    .cover {
+      background: radial-gradient(circle farthest-corner at 80% 20%, hsl(150 80% 20% / .3) 0%, hsl(170 60% 10% / .1) 100%),
+        hsl(231, 32%, 29%) url("https://w0.peakpx.com/wallpaper/306/353/HD-wallpaper-starry-sky-stars-trees-night-view-from-below.jpg") 50% / cover;
+      color: hsl(200 30% 98%);
+    }
+  </style>
+</head>
+<body>
+  <div class="book">
+    <div class="page">
+      <div class="front cover">
+        <h2> MOHIT SHARMA (13 JAN,1978 - 21 MARCH,2009)</h2>
+        <h3> ~ Major (Indian Army)</h3>
+      </div>
+      <div class="back">
+       <img src="https://starsunfolded.com/wp-content/uploads/2021/02/Major-Mohit-Sharma-2.jpg">
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+        <h4>MAJOR MOHIT SHARMA (13 JAN,1978 - 21 MARCH,2009)</h4>
+        <p>Major Mohit Sharma was born on 13th January 1978 in Rohtak district of  Haryana. He was the second child of his parents Shri Rajendra Prasad Sharma and Smt Sushila Sharma. Major Mohit Sharma was fondly called  ‘CHINTU’ by his family members and ‘MIKE’ by his course mates and colleagues. He was very good at playing guitar, mouth organ and synthesizer, in fact, any new instrument he came across, he took it as a challenge to get the mastery of and made sure he could play it to perfection. He never hesitated to give live performances and enthralled his listeners with his beautiful voice, singing Hemant Kumar’s songs as well as playing them on his mouth organ.</p>
+  
+      </p></i>
+      </div>
+      <div class="back">
+        <img src="https://i.pinimg.com/736x/cf/27/0b/cf270bbe8363672c8af35419e8648aa4.jpg" alt="Img 1">
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+        <p> Maj Mohit started his education from Manav Sthali School, South Extension Delhi,  after which he took admission in Holy Angels School, Sahibabad for a year and from where he took admission in DPS Ghaziabad in the year 1988 and passed out from the school in the year 1995. He got good percentage in class XII and his parents got him admitted to Shri  Sant Gajanan Maharaj College of Engineering, Shegaon, Maharashtra. Despite taking admission in an engineering college he had a passion to join the forces and for which he was determined and left engineering to join the prestigious NDA in the year 1995.During his NDA tenure, where he was a member of the India Squadron, he excelled in various fields and emerged as one of the best cadets.
+      
+      </div>
+      <div class="back">
+         <p> He was a champion Horse Rider, trained under the able guidance of Col. Bhawani Singh, with his favorite horse named “Indira”. He was a Boxing champion in the featherweight category as well as one of the best swimmers. He continued his hunger for excellence into the IMA, where he was awarded an appointment of the rank of BCA (battalion cadet adjutant) and was among the chosen ones to get an opportunity to meet Shri K.R Narayanan then the President of India at Rashtrapati Bhawan.He passed out from IMA on 11th December 1999 and got commissioned in 5 Madras. His first posting was at Hyderabad from where he went on to serve the country with 38 RR (Rashtriya Rifles) in Kashmir as the part of counterinsurgency operation where he received his first medal for Gallantry COASM ( Chief of Army Staff Commendation Medal) in the year 2002.
+        </p>
+       
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+         <p>From the very beginning, he wanted to be a para-commando and joined 1 Para (SF) -the elite force of the Indian Army in June 2003. After that, he served in Kashmir with 1 Para (SF) where he was awarded Sena Medal (Gallantry)  in the year 2004. He also served as an instructor at the Commando Wing Belgaum for 2 years from January 2005 to December 2006.He passed out from IMA on 11th December 1999 and got commissioned in 5 Madras. His first posting was at Hyderabad from where he went on to serve the country with 38 RR (Rashtriya Rifles) in Kashmir as the part of counterinsurgency operation where he received his first medal for Gallantry COASM ( Chief of Army Staff Commendation Medal) in the year 2002.From the very beginning, he wanted to be a para-commando and joined 1 Para (SF) -the elite force of the Indian Army in June 2003. </p>
+       
+      </div>
+      <div class="back">
+        <p> After that, he served in Kashmir with 1 Para (SF) where he was awarded Sena Medal (Gallantry)  in the year 2004. He also served as an instructor at the Commando Wing Belgaum for 2 years from January 2005 to December 2006.</p>
+        
+      </div>
+    </div>
+    
+    <div class="page">
+      <div class="front">
+        <h2> Kupwara Operation: 21st March 2009</h2>
+       <p>During 2009, Maj Mohit Sharma’s unit was deployed in Kupwara district of J & K and was engaged in operations against the terrorists on a frequent basis. Based on the information received from the intelligence about the infiltration attempt by some terrorists in Kupwara district, the security forces decided to launch a search and destroy operation on 21 Mar 2009.Maj Mohit Sharma was tasked to lead the Bravo Assault Team against the infiltrating terrorists in dense Haphruda Forest. Maj Mohit Sharma along with his commandos reached the suspected area as planned and soon made contact with the infiltrators.
+    </p>
+       
+      </div>
+      <div class="back">
+       <p>  On observing suspicious movement, he alerted his scouts but the terrorists fired at the troops from three directions indiscriminately.  In the heavy exchange of fire, four commandos got wounded and with complete disregard to his personal safety, Maj Mohit Sharma crawled and recovered two soldiers to safety. Unnerved Maj Mohit Sharma continuing the operation threw grenades and managed to kill two terrorists. However during the exchange of fire Maj Mohit got hit in the chest.Despite seriously wounded he kept directing his commandos, to foil the attempt of the terrorists to escape. In the ensuing battle he realized further danger to his comrades, and in a rare display of raw courage and determination charged at the terrorists, killing two of them in the close combat. Later he succumbed to his injuries and attained martyrdom fighting for his motherland in the finest traditions of 
+        </p>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+        <p> Indian Army.Besides Maj Mohit Sharma, four other soldiers laid down their lives during the operation on 21 Mar which included Hav Sanjay Singh, Hav Anil Kumar, Ptr Shabir Ahmad Malik and Ptr Nater Singh. Maj Mohit Sharma was given the nation’s highest peace time gallantry award, “Ashok Chakra” for his act of conspicuous gallantry, unyielding fighting spirit and supreme sacrifice.</p>
+    
+      </div>
+      <div class="back cover">
+        </div>
+    </div>
+  </div>
+  <script>
+    const flipBook = (elBook) => {
+      elBook.style.setProperty("--c", 0); // Set current page
+      elBook.querySelectorAll(".page").forEach((page, idx) => {
+        page.style.setProperty("--i", idx);
+        page.addEventListener("click", (evt) => {
+          if (evt.target.closest("a")) return;
+          const curr = evt.target.closest(".back") ? idx : idx + 1;
+          elBook.style.setProperty("--c", curr);
+        });
+      });
+    };
+
+    document.querySelectorAll(".book").forEach(flipBook);
+  </script>
+</body>
+</html>
